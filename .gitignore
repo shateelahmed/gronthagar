@@ -1,0 +1,7 @@
+**/node_modules
+**/*.log
+**/.vscode
+**/.editorconfig
+**/.DS_Store
+**/.DS_Store
+**/db.json
