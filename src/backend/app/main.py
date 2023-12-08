@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.db import database, User
+from app.models import database, User
 
 app = FastAPI(title="Gronthagar")
 

@@ -5,7 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from app.db import BaseMeta
+from app.models import BaseMeta
 from app.config import settings
 
 # this is the Alembic Config object, which provides
