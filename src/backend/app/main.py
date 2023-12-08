@@ -18,4 +18,30 @@ async def shutdown():
 
 @app.get("/")
 async def read_root():
-    return await Book.objects.all()
+    return {"message": f"Welcome to {app.title}"}
+
+@app.get("/books")
+async def get_books():
+    books = await Book.objects.all()
+    return {"data": books}
+
+@app.get("/books/{id}")
+async def get_book(id: int):
+    return await Book.objects.get(pk=id)
+
+@app.post("/books")
+async def create_book(book: Book):
+    await book.save()
+    return book
+
+@app.put("/books/{id}")
+async def update_book(id: int, book: Book):
+    book_from_db = await Book.objects.get(pk=id)
+    book.id = id
+    return await book_from_db.update(**book.dict())
+
+@app.delete("/books/{id}")
+async def delete_book(id: int):
+    book_from_db = await Book.objects.get(pk=id)
+    await book_from_db.delete()
+    return {"deleted_book": book_from_db}
