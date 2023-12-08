@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.models import database, User
+from app.models import database, Book
 
 app = FastAPI(title="Gronthagar")
 
@@ -9,7 +9,7 @@ async def startup():
     if not database.is_connected:
         await database.connect()
     # create a dummy entry
-    await User.objects.get_or_create(email="shateel@gronthagar.com")
+    await Book.objects.get_or_create(title="some book", authors="shateel", content="some story", publication_year=2000)
 
 @app.on_event("shutdown")
 async def shutdown():
@@ -18,4 +18,4 @@ async def shutdown():
 
 @app.get("/")
 async def read_root():
-    return await User.objects.all()
+    return await Book.objects.all()

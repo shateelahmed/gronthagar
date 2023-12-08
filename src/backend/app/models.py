@@ -1,6 +1,7 @@
 import databases
 import ormar
 import sqlalchemy
+from datetime import datetime
 
 from .config import settings
 
@@ -13,14 +14,25 @@ class BaseMeta(ormar.ModelMeta):
     database = database
 
 
-class User(ormar.Model):
+# class User(ormar.Model):
+#     class Meta(BaseMeta):
+#         tablename = "users"
+
+#     id: int = ormar.Integer(primary_key=True)
+#     email: str = ormar.String(max_length=128, unique=True, nullable=False)
+#     active: bool = ormar.Boolean(default=True, nullable=False)
+
+
+class Book(ormar.Model):
     class Meta(BaseMeta):
-        tablename = "users"
+        tablename = 'books'
 
     id: int = ormar.Integer(primary_key=True)
-    email: str = ormar.String(max_length=128, unique=True, nullable=False)
-    active: bool = ormar.Boolean(default=True, nullable=False)
+    title: str = ormar.String(max_length=128, unique=True, nullable=False)
+    authors: str = ormar.String(max_length=256, nullable=False)
+    content: str = ormar.String(max_length=512, nullable=False)
+    publication_year: str = ormar.Integer(max=datetime.now().year, nullable=False)
 
 
-engine = sqlalchemy.create_engine(settings.db_url)
-metadata.create_all(engine)
+# engine = sqlalchemy.create_engine(settings.db_url)
+# metadata.create_all(engine)
