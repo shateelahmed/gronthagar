@@ -1,13 +1,37 @@
 version: '3.8'
 
+volumes:
+  postgres_data:
+
 services:
+  postgress:
+    container_name: gronthagar-database
+    image: postgres:16.1
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+
   backend:
     container_name: gronthagar-backend
     build:
       context: ./
       dockerfile: ./src/backend/Dockerfile
+    depends_on:
+      - postgress
+    environment:
+      - DATABASE_HOSTNAME=${DATABASE_HOSTNAME}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
     volumes:
       - ./src/backend:/src/backend
     ports:
       - 8000:8000
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: bash -c 'while !</dev/tcp/postgress/5432; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload'
