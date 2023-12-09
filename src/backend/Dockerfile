@@ -8,10 +8,10 @@ ARG UID=1000
 RUN groupadd --gid ${GID} www && \
     useradd --uid ${UID} --create-home --home-dir /home/www --system --comment "Container User" --shell /bin/bash --gid www www
 
-# add the following director to path to be able to run the installed packages eg. uvicorn
+# add the following directory to path to be able to run the installed packages eg. uvicorn
 ENV PATH /home/www/.local/bin:${PATH}
 
-USER ${GID}
+USER ${UID}
 
 # set work directory
 WORKDIR /src/backend
