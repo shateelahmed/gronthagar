@@ -31,7 +31,7 @@ class Book(ormar.Model):
     title: str = ormar.String(max_length=128, unique=True, nullable=False)
     authors: str = ormar.String(max_length=256, nullable=False)
     summary: str = ormar.String(max_length=512, nullable=False)
-    publication_year: str = ormar.Integer(max=datetime.now().year, nullable=False)
+    publication_year: int = ormar.Integer(max=datetime.now().year, nullable=False)
 
 
 # engine = sqlalchemy.create_engine(settings.db_url)
