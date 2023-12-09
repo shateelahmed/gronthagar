@@ -35,3 +35,16 @@ services:
     ports:
       - 8000:8000
     command: bash -c 'while !</dev/tcp/postgress/5432; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload'
+
+  frontend:
+    container_name: gronthagar-frontend
+    build:
+      context: ./
+      dockerfile: ./src/frontend/Dockerfile
+      target: dev
+    environment:
+      NODE_ENV: dev
+    volumes:
+      - ./src/frontend:/src/frontend
+    ports:
+      - 3000:3000
