@@ -30,7 +30,19 @@ def upgrade() -> None:
         sa.Column('updated_at', sa.DateTime(), server_default=sa.func.current_timestamp(), nullable=False),
     )
     op.create_unique_constraint('uk_books_title', 'books', ['title'])
-
+    op.execute(
+        """
+            ALTER TABLE
+                books
+            ADD COLUMN
+                ts tsvector GENERATED ALWAYS AS (to_tsvector('english', title || ' ' || authors || ' ' || summary)) STORED
+        """
+    )
+    op.execute(
+        """
+            CREATE INDEX gin_ts ON books USING GIN (ts)
+        """
+    )
 
 def downgrade() -> None:
     op.drop_table('books')
