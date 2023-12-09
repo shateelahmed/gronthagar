@@ -24,7 +24,7 @@ def upgrade() -> None:
         sa.Column('id', sa.Integer(), primary_key=True),
         sa.Column('title', sa.String(length=128), nullable=False),
         sa.Column('authors', sa.String(length=256), nullable=False),
-        sa.Column('content', sa.String(length=512), nullable=False),
+        sa.Column('summary', sa.String(length=512), nullable=False),
         sa.Column('publication_year', sa.Integer(), nullable=False),
         sa.Column('created_at', sa.DateTime(), server_default=sa.func.current_timestamp(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), server_default=sa.func.current_timestamp(), nullable=False),

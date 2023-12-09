@@ -28,7 +28,7 @@ async def seed():
     await Book.objects.get_or_create(
         title="some book",
         authors="shateel",
-        content="some story",
+        summary="some story",
         publication_year=2000
     )
 
