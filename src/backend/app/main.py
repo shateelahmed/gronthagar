@@ -38,16 +38,40 @@ async def seed():
     }
 
 @app.get("/books")
-async def get_books(response: Response) -> Response:
+async def search_books(q: str, response: Response) -> Response:
     response.status_code = status.HTTP_404_NOT_FOUND
-    books = []
     message = "No books found"
+    books = []
 
     try:
-        books = await Book.objects.all()
+        books = await database.fetch_all(
+            """
+                SELECT
+                    id,
+                    title,
+                    authors,
+                    summary,
+                    publication_year
+                FROM
+                    books
+                WHERE
+                    ts @@ plainto_tsquery(:q)
+            """,
+            {
+                'q': q
+            }
+        )
+
+        # books = await Book.objects.filter(
+        #     ormar.or_(
+        #         title__icontains=q,
+        #         authors__icontains=q,
+        #         summary__icontains=q
+        #     )
+        # ).get()
         if books:
             response.status_code = status.HTTP_200_OK
-            message = "Books fetched successfully"
+            message = "Book fetched successfully"
     except Exception as exception:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         message = format_exception(exception)
