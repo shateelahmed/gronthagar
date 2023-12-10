@@ -1,9 +1,23 @@
 from fastapi import FastAPI, Response, status
 from app.models import database, Book
 from ormar import NoMatch
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Gronthagar")
 
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 async def startup():
