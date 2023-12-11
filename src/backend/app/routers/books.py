@@ -1,14 +1,12 @@
 from fastapi import APIRouter, Response, status
 from app.models import database, Book
 from ormar import NoMatch
+from ..utils.formatter import format_exception
 
 router = APIRouter(
     prefix="/api/v1/books",
     tags=["books"],
 )
-
-def format_exception(exception: Exception) -> str:
-    return f"An exception occurred. Exception type: {type(exception).__name__}. Arguments: {','.join(map(str, exception.args))}"
 
 @router.get("/")
 async def get_books(response: Response, q: str | None = None) -> Response:
