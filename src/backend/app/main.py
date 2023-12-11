@@ -1,9 +1,19 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.models import database, Book
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import books
 
-app = FastAPI(title="Gronthagar")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    if not database.is_connected:
+        await database.connect()
+    await seed()
+    yield
+    if database.is_connected:
+        await database.disconnect()
+
+app = FastAPI(title="Gronthagar", lifespan=lifespan)
 
 origins = [
     "http://localhost",
@@ -18,17 +28,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.on_event("startup")
-async def startup():
-    if not database.is_connected:
-        await database.connect()
-    await seed()
-
-@app.on_event("shutdown")
-async def shutdown():
-    if database.is_connected:
-        await database.disconnect()
 
 app.include_router(books.router)
 
