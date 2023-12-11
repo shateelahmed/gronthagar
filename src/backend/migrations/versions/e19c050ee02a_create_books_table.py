@@ -29,13 +29,13 @@ def upgrade() -> None:
         sa.Column('created_at', sa.DateTime(), server_default=sa.func.current_timestamp(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), server_default=sa.func.current_timestamp(), nullable=False),
     )
-    op.create_unique_constraint('uk_books_title', 'books', ['title'])
+    op.create_unique_constraint('uk_books_title_authors', 'books', ['title', 'authors'])
     op.execute(
         """
             ALTER TABLE
                 books
             ADD COLUMN
-                ts tsvector GENERATED ALWAYS AS (to_tsvector('english', title || ' ' || authors || ' ' || summary)) STORED
+                ts tsvector GENERATED ALWAYS AS (to_tsvector('english', title || ' ' || authors || ' ' || summary || ' ' || cast(publication_year as varchar))) STORED
         """
     )
     op.execute(
