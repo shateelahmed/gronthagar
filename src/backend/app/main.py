@@ -51,7 +51,7 @@ async def seed():
         "data": None
     }
 
-@app.get("/books")
+@app.get("/api/v1/books")
 async def get_books(response: Response, q: str | None = None) -> Response:
     response.status_code = status.HTTP_404_NOT_FOUND
     message = "No books found"
@@ -98,7 +98,7 @@ async def get_books(response: Response, q: str | None = None) -> Response:
         "data": books
     }
 
-@app.get("/books/{id}")
+@app.get("/api/v1/books/{id}")
 async def get_book(id: int, response: Response) -> Response:
     book = {}
 
@@ -118,7 +118,7 @@ async def get_book(id: int, response: Response) -> Response:
         "data": book
     }
 
-@app.post("/books")
+@app.post("/api/v1/books")
 async def create_book(book: Book, response: Response) -> Response:
     try:
         book = await book.save()
@@ -134,7 +134,7 @@ async def create_book(book: Book, response: Response) -> Response:
         "data": book
     }
 
-@app.put("/books/{id}")
+@app.put("/api/v1/books/{id}")
 async def update_book(id: int, book: Book, response: Response) -> Response:
     try:
         book_from_db = await Book.objects.get(pk=id)
@@ -156,7 +156,7 @@ async def update_book(id: int, book: Book, response: Response) -> Response:
         "data": book
     }
 
-@app.delete("/books/{id}")
+@app.delete("/api/v1/books/{id}")
 async def delete_book(id: int, response: Response) -> Response:
     book = {}
 
