@@ -92,3 +92,5 @@ venv/
 
 # VS Code
 .vscode/
+
+**/data
