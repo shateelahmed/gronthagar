@@ -1,7 +1,8 @@
 version: '3.8'
 
-volumes:
-  postgres_data:
+# volumes:
+#   postgres_data:
+#   postgres_test_data:
 
 services:
   postgress:
@@ -9,13 +10,26 @@ services:
     image: postgres:16.1
     restart: always
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - ./data/postgres/data:/var/lib/postgresql/data/
     ports:
       - 5432:5432
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
+
+  postgress-test:
+    container_name: gronthagar-test-database
+    image: postgres:16.1
+    restart: always
+    volumes:
+      - ./data/postgres/test_data:/var/lib/postgresql/data/
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${TEST_POSTGRES_DB}
 
   backend:
     container_name: gronthagar-backend
@@ -24,27 +38,42 @@ services:
       dockerfile: ./src/backend/Dockerfile
     depends_on:
       - postgress
+      - postgress-test
     environment:
       - DATABASE_HOSTNAME=${DATABASE_HOSTNAME}
       - DATABASE_PORT=${DATABASE_PORT}
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_USERNAME=${DATABASE_USERNAME}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - APP_ENV=${APP_ENV}
+      - TEST_DATABASE_HOSTNAME=${TEST_DATABASE_HOSTNAME}
+      - TEST_DATABASE_PORT=${TEST_DATABASE_PORT}
+      - TEST_DATABASE_NAME=${TEST_DATABASE_NAME}
     volumes:
       - ./src/backend:/src/backend
     ports:
       - 8000:8000
-    command: bash -c 'while !</dev/tcp/postgress/5432; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload'
+    command: bash -c 'while !</dev/tcp/postgress-test/5432; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload'
 
-  frontend:
-    container_name: gronthagar-frontend
-    build:
-      context: ./
-      dockerfile: ./src/frontend/Dockerfile
-      target: dev
-    environment:
-      NODE_ENV: dev
-    volumes:
-      - ./src/frontend:/src/frontend
-    ports:
-      - 3000:3000
+  # frontend:
+  #   container_name: gronthagar-frontend
+  #   build:
+  #     context: ./
+  #     dockerfile: ./src/frontend/Dockerfile
+  #     target: dev
+  #   environment:
+  #     NODE_ENV: dev
+  #   volumes:
+  #     - ./src/frontend:/src/frontend
+  #   ports:rontend:
+  #   container_name: gronthagar-frontend
+  #   build:
+  #     context: ./
+  #     dockerfile: ./src/frontend/Dockerfile
+  #     target: dev
+  #   environment:
+  #     NODE_ENV: dev
+  #   volumes:
+  #     - ./src/frontend:/src/frontend
+  #   ports:
+  #     - 3000:3000
