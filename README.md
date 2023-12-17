@@ -9,6 +9,7 @@ Steps:
 4. Inside the `gronthagar` directory, run `docker compose up -d --build` to build and run the project.
 5. To run the database migrations, run the following command `docker exec -u www gronthagar-backend alembic upgrade head`
 6. Visit `http://localhost:3000` to view the app.
+6. Visit `http://localhost:<BACKEND_PORT>/docs` and `http://localhost:<BACKEND_PORT>/redoc` to view the API documentations.
 
 ## Testing
 1. To run tests of the backend app, execute the following command `docker exec -u www gronthagar-backend pytest`
