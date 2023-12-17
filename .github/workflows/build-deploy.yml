@@ -1,7 +1,11 @@
 name: Build and Deploy Code
+
 run-name: ${{ github.actor }} started the action by making a ${{ github.event_name }} 🚀
+
 on: [push, pull_request]
+
 jobs:
+
   build:
     environment:
       name: testing
@@ -28,3 +32,18 @@ jobs:
       - name: Test
         run: docker exec -u www gronthagar-backend pytest
       - run: echo "🍏 This job's status is ${{ job.status }}."
+
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: [build]
+  #   environment:
+  #     name: production
+  #   steps:
+  #     - name: Check out repository code
+  #       uses: actions/checkout@v4
+  #     - name: deploying to Heroku
+  #       uses: shateel/heroku-deploy@v3.12.12 # This is the action
+  #       with:
+  #         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+  #         heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+  #         heroku_email: ${{secrets.HEROKU_EMAIL}}
