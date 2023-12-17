@@ -11,7 +11,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     ports:
-      - 5432:5432
+      - ${DATABASE_PORT}:5432
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -33,8 +33,8 @@ services:
     volumes:
       - ./src/backend:/src/backend
     ports:
-      - 8000:8000
-    command: bash -c 'while !</dev/tcp/postgress/5432; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload'
+      - ${BACKEND_PORT}:8000
+    command: bash -c "while !</dev/tcp/postgress/${DATABASE_PORT}; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0 --port ${BACKEND_PORT} --reload"
 
   frontend:
     container_name: gronthagar-frontend
@@ -43,8 +43,9 @@ services:
       dockerfile: ./src/frontend/Dockerfile
       target: dev
     environment:
-      NODE_ENV: dev
+      - NODE_ENV=dev
+      - API_BASE_URL=http://localhost:${BACKEND_PORT}
     volumes:
       - ./src/frontend:/src/frontend
     ports:
-      - 3000:3000
+      - ${FRONTEND_PORT}:3000
