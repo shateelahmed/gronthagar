@@ -35,7 +35,7 @@ services:
     container_name: gronthagar-backend
     build:
       context: ./
-      dockerfile: ./src/backend/Dockerfile
+      dockerfile: ./src/backend2/Dockerfile
     depends_on:
       - postgress
       - postgress-test
@@ -50,7 +50,7 @@ services:
       - TEST_DATABASE_PORT=${TEST_DATABASE_PORT}
       - TEST_DATABASE_NAME=${TEST_DATABASE_NAME}
     volumes:
-      - ./src/backend:/src/backend
+      - ./src/backend2:/src/backend2
     ports:
       - 8000:8000
     command: bash -c 'while !</dev/tcp/postgress-test/5432; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload'
