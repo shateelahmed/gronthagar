@@ -20,6 +20,7 @@ class Book extends Component {
         summary: "",
         publication_year: "",
       },
+      alertType: "",
       message: "",
     };
   }
@@ -48,7 +49,6 @@ class Book extends Component {
         this.setState({
           book: response.data.data,
         });
-        console.log(response.data);
       })
       .catch((e) => {
         console.log(e);
@@ -59,13 +59,19 @@ class Book extends Component {
     http
       .put(`/books/${this.state.book.id}`, this.state.book)
       .then((response) => {
-        console.log(response.data);
         this.setState({
+          alertType: "success",
           message: "Book updated successfully",
         });
       })
       .catch((e) => {
         console.log(e);
+        if (e.response.status !== undefined && e.response.status === 422) {
+          this.setState({
+            alertType: "danger",
+            message: "All fields are required and the field Publication Year must be a valid year",
+          });
+        }
       });
   }
 
@@ -79,7 +85,6 @@ class Book extends Component {
     http
       .delete(`/books/${this.state.book.id}`)
       .then((response) => {
-        console.log(response.data);
         this.props.router.navigate("/books");
       })
       .catch((e) => {
@@ -88,7 +93,7 @@ class Book extends Component {
   }
 
   render() {
-    const { book, message } = this.state;
+    const { book, message, alertType } = this.state;
 
     return (
       <div className="card p-3">
@@ -96,7 +101,7 @@ class Book extends Component {
           <div className="edit-form">
             <h4>Edit Book</h4>
             {message ? (
-              <div className="alert alert-success" role="alert">
+              <div className={`alert alert-${alertType}`} role="alert">
                 {message}
               </div>
             ) : (
@@ -148,7 +153,7 @@ class Book extends Component {
                   value={book.publication_year}
                   onChange={this.handleChange}
                   onKeyDown={this.handleKeyDown}
-                  name="publicationYear"
+                  name="publication_year"
                 />
               </div>
             </form>

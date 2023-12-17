@@ -10,6 +10,7 @@ export default class AddBook extends Component {
       summary: "",
       publicationYear: "",
     },
+    alertType: "",
     message: "",
   };
 
@@ -48,12 +49,18 @@ export default class AddBook extends Component {
       .then((response) => {
         this.setState(this.initialState);
         this.setState({
+          alertType: "success",
           message: "Book added successfully",
         });
-        console.log(response.data);
       })
       .catch((e) => {
         console.log(e);
+        if (e.response.status !== undefined && e.response.status === 422) {
+          this.setState({
+            alertType: "danger",
+            message: "All fields are required and the field Publication Year must be a valid year",
+          });
+        }
       });
   }
 
@@ -64,12 +71,12 @@ export default class AddBook extends Component {
   };
 
   render() {
-    const { book, message } = this.state;
+    const { book, message, alertType } = this.state;
     return (
       <div className="card p-3">
         <h4>Add Book</h4>
         {message ? (
-          <div className="alert alert-success" role="alert">
+          <div className={`alert alert-${alertType}`} role="alert">
             {message}
           </div>
         ) : (
