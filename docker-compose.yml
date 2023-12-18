@@ -33,8 +33,8 @@ services:
     volumes:
       - ./src/backend:/src/backend
     ports:
-      - ${BACKEND_PORT}:8000
-    command: bash -c "while !</dev/tcp/postgress/${DATABASE_PORT}; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0 --port ${BACKEND_PORT} --reload"
+      - 8000:8000
+    command: bash -c "while !</dev/tcp/postgress/${DATABASE_PORT}; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
   frontend:
     container_name: gronthagar-frontend
@@ -44,8 +44,8 @@ services:
       target: dev
     environment:
       - NODE_ENV=dev
-      - API_BASE_URL=http://localhost:${BACKEND_PORT}
+      - API_BASE_URL="http://localhost:8000"
     volumes:
       - ./src/frontend:/src/frontend
     ports:
-      - ${FRONTEND_PORT}:3000
+      - 3000:3000
