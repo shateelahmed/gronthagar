@@ -8,7 +8,6 @@ from .routers import books
 async def lifespan(app: FastAPI):
     if not database.is_connected:
         await database.connect()
-    await seed()
     yield
     if database.is_connected:
         await database.disconnect()
@@ -35,16 +34,11 @@ app.include_router(books.router)
 async def read_root():
     return {"message": f"Welcome to {app.title}"}
 
-@app.get("/seed")
 async def seed():
-    await Book.objects.get_or_create(
+    result = await Book.objects.get_or_create(
         title="some book",
         authors="shateel",
         summary="some story",
         publication_year=2000
     )
-
-    return {
-        "message": "Seeding successful",
-        "data": None
-    }
+    return result[0]

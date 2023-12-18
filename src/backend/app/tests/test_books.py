@@ -3,7 +3,7 @@ from ..main import app, seed
 
 client = TestClient(app)
 
-# await seed()
+seed()
 
 def test_get_books():
     response = client.get("/api/v1/books")
